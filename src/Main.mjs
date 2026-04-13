@@ -28,6 +28,8 @@ function decodeUser(json) {
   }
 }
 
+let greeting = "comptime";
+
 let ada = {
   name: "Ada",
   age: 42,
@@ -38,13 +40,21 @@ let encodedAda = encodeUser(ada);
 
 let decodedAda = decodeUser(encodedAda);
 
+console.log(3);
+
+console.log(greeting);
+
 console.log(encodedAda);
 
 console.log(decodedAda);
 
+let three = 3;
+
 export {
   encodeUser,
   decodeUser,
+  three,
+  greeting,
   ada,
   encodedAda,
   decodedAda,

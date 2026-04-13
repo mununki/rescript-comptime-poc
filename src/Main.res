@@ -77,9 +77,14 @@ let encodeUser: user => JSON.t = %comptime(makeJsonEncoder())
 
 let decodeUser: JSON.t => option<user> = %comptime(makeJsonDecoder())
 
+let three: int = %comptime(1 + 2)
+let greeting: string = %comptime("comp" ++ "time")
+
 let ada = {name: "Ada", age: 42, active: true}
 let encodedAda = encodeUser(ada)
 let decodedAda = decodeUser(encodedAda)
 
+Console.log(three)
+Console.log(greeting)
 Console.log(encodedAda)
 Console.log(decodedAda)
