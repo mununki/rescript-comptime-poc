@@ -1,0 +1,16 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@rescript/runtime':
+        specifier: link:../rescript/packages/@rescript/runtime
+        version: link:../rescript/packages/@rescript/runtime
+      rescript:
+        specifier: link:../rescript
+        version: link:../rescript

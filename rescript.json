@@ -1,0 +1,15 @@
+{
+  "name": "@comptime-poc/local",
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true,
+    "suffix": ".mjs"
+  },
+  "warnings": {
+    "error": "+101"
+  }
+}
