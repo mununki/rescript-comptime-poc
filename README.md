@@ -28,3 +28,21 @@ pnpm test
 ```
 
 The project uses local `link:` dependencies so `node_modules/rescript` points at the sibling compiler checkout.
+
+## Proving Compile-Time Evaluation
+
+`three` and `greeting` show valid `%comptime(...)` expressions, but their final JS is not a strong proof on its own because ordinary compiler optimizations can also constant-fold simple expressions.
+
+The direct proof is the commented example in [`src/Main.res`](./src/Main.res):
+
+```rescript
+let broken: int = %comptime(compileError("ran during compilation"))
+```
+
+If you uncomment it and run:
+
+```sh
+pnpm build
+```
+
+the build should fail during compilation, before JS is emitted. That demonstrates that `%comptime(...)` is being evaluated by the compiler.

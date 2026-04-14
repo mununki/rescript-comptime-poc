@@ -77,8 +77,27 @@ let encodeUser: user => JSON.t = %comptime(makeJsonEncoder())
 
 let decodeUser: JSON.t => option<user> = %comptime(makeJsonDecoder())
 
-let three: int = %comptime(1 + 2)
-let greeting: string = %comptime("comp" ++ "time")
+let three: int = %comptime(
+  if true {
+    1 + 2
+  } else {
+    compileError("unreachable int branch")
+  }
+)
+
+let greeting: string = %comptime(
+  switch "x" {
+  | "x" => "comp" ++ "time"
+  | _ => compileError("unreachable string branch")
+  }
+)
+
+/*
+Uncomment this binding to prove that %comptime runs during compilation.
+`pnpm build` will fail before JS is emitted.
+
+let broken: int = %comptime(compileError("ran during compilation"))
+*/
 
 let ada = {name: "Ada", age: 42, active: true}
 let encodedAda = encodeUser(ada)
