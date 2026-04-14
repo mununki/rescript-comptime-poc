@@ -26,13 +26,13 @@ let makeJsonEncoder:
         }
 
       (value: t) => {
-        let builder = fields->Array.reduce(Dict.make(), (builder, field) => {
-          let nextBuilder = Dict.copy(builder)
-          Dict.set(nextBuilder, field.name, encodeField(field, value))
-          nextBuilder
+        let dict = fields->Array.reduce(Dict.make(), (dict, field) => {
+          let newDict = Dict.copy(dict)
+          Dict.set(newDict, field.name, encodeField(field, value))
+          newDict
         })
 
-        JSON.Object(builder)
+        JSON.Object(dict)
       }
     | _ => failwith("makeJsonEncoder only supports record types")
     }
@@ -44,10 +44,10 @@ let makeRecordCopy:
     switch reflect() {
     | Record({fields}) =>
       (value: t) =>
-        fields->Array.reduce(Dict.make(), (builder, field) => {
-          let nextBuilder = Dict.copy(builder)
-          Dict.set(nextBuilder, field.name, field.get(value))
-          nextBuilder
+        fields->Array.reduce(Dict.make(), (dict, field) => {
+          let newDict = Dict.copy(dict)
+          Dict.set(newDict, field.name, field.get(value))
+          newDict
         })
     | _ => failwith("makeRecordCopy only supports record types")
     }
@@ -78,15 +78,15 @@ let makeJsonDecoder:
         | _ => failwith("makeJsonDecoder only supports string, int, and bool fields")
         }
 
-      let finish = (_obj, builder) => Some(builder)
+      let finish = (_obj, dict) => Some(dict)
 
       let addDecodedField = (next, field) =>
-        (obj, builder) =>
+        (obj, dict) =>
           switch decodeField(field, obj) {
           | Some(value) =>
-            let nextBuilder = Dict.copy(builder)
-            Dict.set(nextBuilder, field.name, value)
-            next(obj, nextBuilder)
+            let newDict = Dict.copy(dict)
+            Dict.set(newDict, field.name, value)
+            next(obj, newDict)
           | None => None
           }
 
