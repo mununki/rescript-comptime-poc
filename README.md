@@ -1,22 +1,29 @@
 # rescript-comptime-poc
 
-Small standalone POC project for exercising the `comptime` prototype in the
-sibling `../rescript` checkout.
+Small standalone POC project for exercising the current `comptime`
+implementation in the sibling `../rescript` checkout.
 
-The current sample uses the v2 public surface:
+The public surface used here is:
 
 - `%comptime(...)`
 - `reflect()`
-- reflected field accessors
+- `field.name`, `field.typ`, `field.get(value)`
+- `item.index`, `item.typ`, `item.get(value)`
+- `constructor.name`, `constructor.payload`, `constructor.unpack(value)`, `constructor.make(payload)`
 
-The sample includes:
+The sample includes generic:
 
 - `makeJsonEncoder`
 - `makeJsonDecoder`
-- `makeRecordCopy`
+- `makeCopy`
 
-All three are written with ordinary ReScript syntax. The older `%quote` /
-`%splice` / `Code.t` surface is not used here.
+and applies them to:
+
+- records
+- tuples
+- ordinary variants
+- `list`
+- `result`
 
 ## Assumptions
 
