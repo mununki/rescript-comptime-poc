@@ -89,20 +89,18 @@ let rec decodeByType:
         let finish = (_obj, builder) => Some(builder)
 
         let addField = (next, field) =>
-          (obj, builder) =>
+          (obj, r) =>
             switch Dict.get(obj, field.name) {
             | Some(valueJson) =>
               switch decodeByType(field.typ, valueJson) {
-              | Some(value) =>
-                let nextBuilder = Dict.copy(builder)
-                Dict.set(nextBuilder, field.name, value)
-                next(obj, nextBuilder)
+              | Some(value) => next(obj, {...r, field: value})
               | None => None
               }
             | None => None
             }
 
-        Array.reduceRight(fields, finish, addField)(obj, Dict.make())
+        let seed = {}
+        Array.reduceRight(fields, finish, addField)(obj, seed)
       | _ => None
       }
     | Tuple({items}) =>
