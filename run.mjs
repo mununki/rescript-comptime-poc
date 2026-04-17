@@ -3,12 +3,14 @@ import assert from "node:assert/strict";
 import {
   ada,
   agePair,
+  allColors,
   copyAnimal,
   copyColor,
   copyInts,
   copyPair,
   copyResult,
   copyShape,
+  copyUserFieldValue,
   copyUser,
   decodeAnimal,
   decodeColor,
@@ -16,6 +18,7 @@ import {
   decodePair,
   decodeResult,
   decodeShape,
+  decodeUserFieldValue,
   decodeUser,
   encodeAnimal,
   encodeColor,
@@ -26,10 +29,12 @@ import {
   encodedPair,
   encodedScore,
   encodedShape,
+  encodedUserAgeField,
   encodeInts,
   encodePair,
   encodeResult,
   encodeShape,
+  encodeUserFieldValue,
   encodeUser,
   favoriteColor,
   fox,
@@ -38,6 +43,9 @@ import {
   sampleShape,
   score,
   three,
+  userActiveField,
+  userAgeField,
+  userNameField,
 } from "./src/Main.mjs";
 
 assert.equal(three, 3);
@@ -71,6 +79,26 @@ assert.equal(encodedColor, "Green");
 assert.equal(encodeColor(favoriteColor), encodedColor);
 assert.equal(decodeColor(encodedColor), favoriteColor);
 assert.equal(copyColor(favoriteColor), favoriteColor);
+assert.deepEqual(allColors, ["Red", "Green", "Blue"]);
+assert.deepEqual(userNameField, {
+  TAG: "Name",
+  _0: "Ada",
+});
+assert.deepEqual(userAgeField, {
+  TAG: "Age",
+  _0: 42,
+});
+assert.deepEqual(userActiveField, {
+  TAG: "Active",
+  _0: true,
+});
+assert.deepEqual(encodedUserAgeField, {
+  tag: "Age",
+  value: 42,
+});
+assert.deepEqual(encodeUserFieldValue(userAgeField), encodedUserAgeField);
+assert.deepEqual(decodeUserFieldValue(encodedUserAgeField), userAgeField);
+assert.deepEqual(copyUserFieldValue(userActiveField), userActiveField);
 
 assert.deepEqual(encodedShape, {
   tag: "Rect",

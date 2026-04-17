@@ -19,6 +19,27 @@ type color =
   | Green
   | Blue
 
+type userFieldValue = %comptime({
+  let makeVariantFromFields = fields => Variant({
+    constructors: fields->Array.map(field => Constructor({
+      name: field.name->String.capitalize,
+      payload: Single(field.typ),
+    })),
+  })
+  let makeVariantFromRecord = _witness =>
+    switch reflect() {
+    | Record({fields}) => makeVariantFromFields(fields)
+    | _ => failwith("userFieldValue only supports records")
+    }
+  makeVariantFromRecord(
+    module(
+      {
+        type t = user
+      }
+    ),
+  )
+})
+
 type shape =
   | Point
   | Circle(float)
@@ -47,10 +68,8 @@ let rec encodeByType:
       | Some(value) => encodeByType(inner, value)
       | None => JSON.Null
       }
-    | Array(inner) =>
-      JSON.Array(value->Array.map(item => encodeByType(inner, item)))
-    | List(inner) =>
-      JSON.Array(value->List.toArray->Array.map(item => encodeByType(inner, item)))
+    | Array(inner) => JSON.Array(value->Array.map(item => encodeByType(inner, item)))
+    | List(inner) => JSON.Array(value->List.toArray->Array.map(item => encodeByType(inner, item)))
     | Record({fields}) =>
       JSON.Object(
         fields->Array.reduce(Dict.make(), (builder, field) => {
@@ -74,15 +93,14 @@ and encodeVariant:
         JSON.Object(dict{"tag": JSON.String(name)})
       }
 
-    let finish = _ =>
-      JsError.throwWithMessage("variant value did not match any constructor")
+    let finish = _ => JsError.throwWithMessage("variant value did not match any constructor")
 
     let addConstructor = (next, constructor) =>
       value =>
         switch constructor.payload {
         | NoPayload =>
           switch constructor.unpack(value) {
-          | Some(()) => encodeNoPayload(constructor.name)
+          | Some(_) => encodeNoPayload(constructor.name)
           | None => next(value)
           }
         | Single(inner) =>
@@ -227,7 +245,7 @@ and decodeTupleFromArray:
 
     let addItem = (next, item) =>
       (values, builder) =>
-        switch Array.get(values, item.index) {
+        switch values[item.index] {
         | Some(valueJson) =>
           switch decodeByType(item.typ, valueJson) {
           | Some(value) =>
@@ -252,7 +270,7 @@ and decodeEnumVariant:
         switch constructor.payload {
         | NoPayload =>
           if constructor.name == tag {
-            Some(constructor.make(()))
+            Some(constructor.make())
           } else {
             next(tag)
           }
@@ -271,7 +289,7 @@ and decodeTaggedVariant:
       (tag, obj) =>
         if constructor.name == tag {
           switch constructor.payload {
-          | NoPayload => Some(constructor.make(()))
+          | NoPayload => Some(constructor.make())
           | Single(inner) =>
             switch Dict.get(obj, "value") {
             | Some(valueJson) =>
@@ -332,15 +350,14 @@ and copyByType:
 and copyVariant:
   type a. (array<constructor<a>>, a) => a =
   (constructors, value) => {
-    let finish = _ =>
-      JsError.throwWithMessage("variant value did not match any constructor")
+    let finish = _ => JsError.throwWithMessage("variant value did not match any constructor")
 
     let addConstructor = (next, constructor) =>
       value =>
         switch constructor.payload {
         | NoPayload =>
           switch constructor.unpack(value) {
-          | Some(()) => constructor.make(())
+          | Some(_) => constructor.make()
           | None => next(value)
           }
         | Single(inner) =>
@@ -350,8 +367,7 @@ and copyVariant:
           }
         | Tuple({items}) =>
           switch constructor.unpack(value) {
-          | Some(payload) =>
-            constructor.make(copyByType(Tuple({items: items}), payload))
+          | Some(payload) => constructor.make(copyByType(Tuple({items: items}), payload))
           | None => next(value)
           }
         }
@@ -380,6 +396,20 @@ let makeCopy:
     (value: t) => copyByType(desc, value)
   }
 
+let makeAllCases:
+  type t. unit => array<t> =
+  () =>
+    switch reflect() {
+    | Variant({constructors}) =>
+      constructors->Array.map(constructor =>
+        switch constructor.payload {
+        | NoPayload => constructor.make()
+        | _ => failwith("makeAllCases only supports no-payload variants")
+        }
+      )
+    | _ => failwith("makeAllCases only supports variants")
+    }
+
 let encodeUser: user => JSON.t = %comptime(makeJsonEncoder())
 let decodeUser: JSON.t => option<user> = %comptime(makeJsonDecoder())
 let copyUser: user => user = %comptime(makeCopy())
@@ -395,6 +425,11 @@ let copyPair: pair => pair = %comptime(makeCopy())
 let encodeColor: color => JSON.t = %comptime(makeJsonEncoder())
 let decodeColor: JSON.t => option<color> = %comptime(makeJsonDecoder())
 let copyColor: color => color = %comptime(makeCopy())
+let allColors: array<color> = %comptime(makeAllCases())
+
+let encodeUserFieldValue: userFieldValue => JSON.t = %comptime(makeJsonEncoder())
+let decodeUserFieldValue: JSON.t => option<userFieldValue> = %comptime(makeJsonDecoder())
+let copyUserFieldValue: userFieldValue => userFieldValue = %comptime(makeCopy())
 
 let encodeShape: shape => JSON.t = %comptime(makeJsonEncoder())
 let decodeShape: JSON.t => option<shape> = %comptime(makeJsonDecoder())
@@ -434,6 +469,9 @@ let ada = {name: "Ada", age: 42, active: true}
 let fox = {species: "Fox", age: 5, wild: true}
 let agePair = ("Ada", 42)
 let favoriteColor = Green
+let userNameField = Name("Ada")
+let userAgeField = Age(42)
+let userActiveField = Active(true)
 let sampleShape = Rect(3., 4.)
 let numbers = list{1, 2, 3}
 let score = Ok(7)
@@ -442,6 +480,7 @@ let encodedAda = encodeUser(ada)
 let encodedFox = encodeAnimal(fox)
 let encodedPair = encodePair(agePair)
 let encodedColor = encodeColor(favoriteColor)
+let encodedUserAgeField = encodeUserFieldValue(userAgeField)
 let encodedShape = encodeShape(sampleShape)
 let encodedNumbers = encodeInts(numbers)
 let encodedScore = encodeResult(score)
@@ -462,6 +501,13 @@ Console.log(copyPair(agePair))
 Console.log(encodedColor)
 Console.log(decodeColor(encodedColor))
 Console.log(copyColor(favoriteColor))
+Console.log(allColors)
+Console.log(userNameField)
+Console.log(userAgeField)
+Console.log(userActiveField)
+Console.log(encodedUserAgeField)
+Console.log(decodeUserFieldValue(encodedUserAgeField))
+Console.log(copyUserFieldValue(userActiveField))
 Console.log(encodedShape)
 Console.log(decodeShape(encodedShape))
 Console.log(copyShape(sampleShape))

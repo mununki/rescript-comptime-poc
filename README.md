@@ -3,19 +3,23 @@
 Small standalone POC project for exercising the current `comptime`
 implementation in the sibling `../rescript` checkout.
 
-The public surface used here is:
+The public surface used here is intentionally small:
 
-- `%comptime(...)`
+- `%comptime(...)` on top-level `let` bindings
+- `type t = %comptime(...)` for generated type aliases
 - `reflect()`
 - `field.name`, `field.typ`, `field.get(value)`
 - `item.index`, `item.typ`, `item.get(value)`
 - `constructor.name`, `constructor.payload`, `constructor.unpack(value)`, `constructor.make(payload)`
+- anonymous module witnesses such as `module({type t = user})` for type-level reflection
 
 The sample includes generic:
 
 - `makeJsonEncoder`
 - `makeJsonDecoder`
 - `makeCopy`
+- `makeAllCases`
+- `makeVariantFromRecord`
 
 and applies them to:
 
@@ -24,6 +28,7 @@ and applies them to:
 - ordinary variants
 - `list`
 - `result`
+- generated type aliases derived from existing reflected types
 
 ## Assumptions
 
@@ -52,10 +57,38 @@ pnpm test
 The project uses local `link:` dependencies, so `node_modules/rescript` points
 at the sibling compiler checkout.
 
+## Type-Level Example
+
+The POC includes a generated type alias that turns a record into a variant
+without introducing a separate `Type.*` builder API:
+
+```rescript
+type userFieldValue = %comptime(
+  {
+    let makeVariantFromFields = fields =>
+      Variant({
+        constructors:
+          fields->Array.map(field =>
+            Constructor({
+              name: field.name->String.capitalize,
+              payload: Single(field.typ),
+            })
+          ),
+      })
+    let makeVariantFromRecord = _witness =>
+      switch reflect() {
+      | Record({fields}) => makeVariantFromFields(fields)
+      | _ => failwith("userFieldValue only supports records")
+      }
+    makeVariantFromRecord(module({type t = user}))
+  }
+)
+```
+
 ## Proving Compile-Time Evaluation
 
 `three` and `greeting` are valid `%comptime(...)` examples, but their final JS is
-not a proof by itself because ordinary compiler optimizations can also
+not proof by itself because ordinary compiler optimizations can also
 constant-fold simple expressions.
 
 The direct proof is the commented example in [`src/Main.res`](./src/Main.res):
@@ -70,5 +103,5 @@ If you uncomment it and run:
 pnpm build
 ```
 
-the build should fail during compilation, before JS is emitted. That
-demonstrates that `%comptime(...)` is being evaluated by the compiler.
+the build fails during compilation, before JS is emitted. That demonstrates
+that `%comptime(...)` is being evaluated by the compiler.

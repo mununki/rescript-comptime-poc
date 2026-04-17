@@ -272,33 +272,205 @@ function copyColor(value$comptime42) {
   }
 }
 
-function encodeShape(value$comptime43) {
+let allColors = [
+  "Red",
+  "Green",
+  "Blue"
+];
+
+function encodeUserFieldValue(value$comptime43) {
+  let payload$comptime44;
+  switch (value$comptime43.TAG) {
+    case "Name" :
+      payload$comptime44 = value$comptime43._0;
+      break;
+    case "Age" :
+    case "Active" :
+      payload$comptime44 = undefined;
+      break;
+  }
+  if (payload$comptime44 !== undefined) {
+    return {
+      tag: "Name",
+      value: payload$comptime44
+    };
+  }
+  let payload$comptime45;
+  switch (value$comptime43.TAG) {
+    case "Age" :
+      payload$comptime45 = value$comptime43._0;
+      break;
+    case "Name" :
+    case "Active" :
+      payload$comptime45 = undefined;
+      break;
+  }
+  if (payload$comptime45 !== undefined) {
+    return {
+      tag: "Age",
+      value: payload$comptime45
+    };
+  }
+  let payload$comptime46;
+  switch (value$comptime43.TAG) {
+    case "Name" :
+    case "Age" :
+      payload$comptime46 = undefined;
+      break;
+    case "Active" :
+      payload$comptime46 = value$comptime43._0;
+      break;
+  }
+  if (payload$comptime46 !== undefined) {
+    return {
+      tag: "Active",
+      value: payload$comptime46
+    };
+  } else {
+    return Stdlib_JsError.throwWithMessage("variant value did not match any constructor");
+  }
+}
+
+function decodeUserFieldValue(json$comptime47) {
+  if (typeof json$comptime47 !== "object" || json$comptime47 === null || Array.isArray(json$comptime47)) {
+    return;
+  }
+  let match = json$comptime47["tag"];
+  if (match === undefined) {
+    return;
+  }
+  if (typeof match !== "string") {
+    return;
+  }
+  if ("Name" === match) {
+    let valueJson$comptime51 = json$comptime47["value"];
+    if (valueJson$comptime51 === undefined) {
+      return;
+    }
+    let value$comptime53;
+    value$comptime53 = typeof valueJson$comptime51 === "string" ? valueJson$comptime51 : undefined;
+    if (value$comptime53 !== undefined) {
+      return {
+        TAG: "Name",
+        _0: value$comptime53
+      };
+    } else {
+      return;
+    }
+  }
+  if ("Age" === match) {
+    let valueJson$comptime54 = json$comptime47["value"];
+    if (valueJson$comptime54 === undefined) {
+      return;
+    }
+    let value$comptime56;
+    value$comptime56 = typeof valueJson$comptime54 === "number" ? valueJson$comptime54 | 0 : undefined;
+    if (value$comptime56 !== undefined) {
+      return {
+        TAG: "Age",
+        _0: value$comptime56
+      };
+    } else {
+      return;
+    }
+  }
+  if ("Active" !== match) {
+    return;
+  }
+  let valueJson$comptime57 = json$comptime47["value"];
+  if (valueJson$comptime57 === undefined) {
+    return;
+  }
+  let value$comptime59;
+  value$comptime59 = typeof valueJson$comptime57 === "boolean" ? valueJson$comptime57 : undefined;
+  if (value$comptime59 !== undefined) {
+    return {
+      TAG: "Active",
+      _0: value$comptime59
+    };
+  }
+}
+
+function copyUserFieldValue(value$comptime60) {
+  let payload$comptime61;
+  switch (value$comptime60.TAG) {
+    case "Name" :
+      payload$comptime61 = value$comptime60._0;
+      break;
+    case "Age" :
+    case "Active" :
+      payload$comptime61 = undefined;
+      break;
+  }
+  if (payload$comptime61 !== undefined) {
+    return {
+      TAG: "Name",
+      _0: payload$comptime61
+    };
+  }
+  let payload$comptime62;
+  switch (value$comptime60.TAG) {
+    case "Age" :
+      payload$comptime62 = value$comptime60._0;
+      break;
+    case "Name" :
+    case "Active" :
+      payload$comptime62 = undefined;
+      break;
+  }
+  if (payload$comptime62 !== undefined) {
+    return {
+      TAG: "Age",
+      _0: payload$comptime62
+    };
+  }
+  let payload$comptime63;
+  switch (value$comptime60.TAG) {
+    case "Name" :
+    case "Age" :
+      payload$comptime63 = undefined;
+      break;
+    case "Active" :
+      payload$comptime63 = value$comptime60._0;
+      break;
+  }
+  if (payload$comptime63 !== undefined) {
+    return {
+      TAG: "Active",
+      _0: payload$comptime63
+    };
+  } else {
+    return Stdlib_JsError.throwWithMessage("variant value did not match any constructor");
+  }
+}
+
+function encodeShape(value$comptime64) {
   let match;
-  match = typeof value$comptime43 !== "object" ? Primitive_option.some(undefined) : undefined;
+  match = typeof value$comptime64 !== "object" ? Primitive_option.some(undefined) : undefined;
   if (match !== undefined) {
     return {
       tag: "Point"
     };
   }
-  let payload$comptime44;
-  payload$comptime44 = typeof value$comptime43 !== "object" || value$comptime43.TAG !== "Circle" ? undefined : value$comptime43._0;
-  if (payload$comptime44 !== undefined) {
+  let payload$comptime65;
+  payload$comptime65 = typeof value$comptime64 !== "object" || value$comptime64.TAG !== "Circle" ? undefined : value$comptime64._0;
+  if (payload$comptime65 !== undefined) {
     return {
       tag: "Circle",
-      value: payload$comptime44
+      value: payload$comptime65
     };
   }
-  let payload$comptime45;
-  payload$comptime45 = typeof value$comptime43 !== "object" || value$comptime43.TAG === "Circle" ? undefined : [
-      value$comptime43._0,
-      value$comptime43._1
+  let payload$comptime66;
+  payload$comptime66 = typeof value$comptime64 !== "object" || value$comptime64.TAG === "Circle" ? undefined : [
+      value$comptime64._0,
+      value$comptime64._1
     ];
-  if (payload$comptime45 !== undefined) {
+  if (payload$comptime66 !== undefined) {
     return {
       tag: "Rect",
       value: [
-        payload$comptime45[0],
-        payload$comptime45[1]
+        payload$comptime66[0],
+        payload$comptime66[1]
       ]
     };
   } else {
@@ -306,11 +478,11 @@ function encodeShape(value$comptime43) {
   }
 }
 
-function decodeShape(json$comptime46) {
-  if (typeof json$comptime46 !== "object" || json$comptime46 === null || Array.isArray(json$comptime46)) {
+function decodeShape(json$comptime67) {
+  if (typeof json$comptime67 !== "object" || json$comptime67 === null || Array.isArray(json$comptime67)) {
     return;
   }
-  let match = json$comptime46["tag"];
+  let match = json$comptime67["tag"];
   if (match === undefined) {
     return;
   }
@@ -321,16 +493,16 @@ function decodeShape(json$comptime46) {
     return "Point";
   }
   if ("Circle" === match) {
-    let valueJson$comptime50 = json$comptime46["value"];
-    if (valueJson$comptime50 === undefined) {
+    let valueJson$comptime71 = json$comptime67["value"];
+    if (valueJson$comptime71 === undefined) {
       return;
     }
-    let value$comptime52;
-    value$comptime52 = typeof valueJson$comptime50 === "number" ? valueJson$comptime50 : undefined;
-    if (value$comptime52 !== undefined) {
+    let value$comptime73;
+    value$comptime73 = typeof valueJson$comptime71 === "number" ? valueJson$comptime71 : undefined;
+    if (value$comptime73 !== undefined) {
       return {
         TAG: "Circle",
-        _0: value$comptime52
+        _0: value$comptime73
       };
     } else {
       return;
@@ -339,83 +511,83 @@ function decodeShape(json$comptime46) {
   if ("Rect" !== match) {
     return;
   }
-  let valueJson$comptime53 = json$comptime46["value"];
-  if (valueJson$comptime53 === undefined) {
+  let valueJson$comptime74 = json$comptime67["value"];
+  if (valueJson$comptime74 === undefined) {
     return;
   }
-  let value$comptime61;
-  if (Array.isArray(valueJson$comptime53)) {
-    let valueJson$comptime55 = valueJson$comptime53[0];
-    if (valueJson$comptime55 !== undefined) {
-      let value$comptime57;
-      value$comptime57 = typeof valueJson$comptime55 === "number" ? valueJson$comptime55 : undefined;
-      if (value$comptime57 !== undefined) {
-        let valueJson$comptime58 = valueJson$comptime53[1];
-        if (valueJson$comptime58 !== undefined) {
-          let value$comptime60;
-          value$comptime60 = typeof valueJson$comptime58 === "number" ? valueJson$comptime58 : undefined;
-          value$comptime61 = value$comptime60 !== undefined ? [
-              value$comptime57,
-              value$comptime60
+  let value$comptime82;
+  if (Array.isArray(valueJson$comptime74)) {
+    let valueJson$comptime76 = valueJson$comptime74[0];
+    if (valueJson$comptime76 !== undefined) {
+      let value$comptime78;
+      value$comptime78 = typeof valueJson$comptime76 === "number" ? valueJson$comptime76 : undefined;
+      if (value$comptime78 !== undefined) {
+        let valueJson$comptime79 = valueJson$comptime74[1];
+        if (valueJson$comptime79 !== undefined) {
+          let value$comptime81;
+          value$comptime81 = typeof valueJson$comptime79 === "number" ? valueJson$comptime79 : undefined;
+          value$comptime82 = value$comptime81 !== undefined ? [
+              value$comptime78,
+              value$comptime81
             ] : undefined;
         } else {
-          value$comptime61 = undefined;
+          value$comptime82 = undefined;
         }
       } else {
-        value$comptime61 = undefined;
+        value$comptime82 = undefined;
       }
     } else {
-      value$comptime61 = undefined;
+      value$comptime82 = undefined;
     }
   } else {
-    value$comptime61 = undefined;
+    value$comptime82 = undefined;
   }
-  if (value$comptime61 !== undefined) {
+  if (value$comptime82 !== undefined) {
     return {
       TAG: "Rect",
-      _0: value$comptime61[0],
-      _1: value$comptime61[1]
+      _0: value$comptime82[0],
+      _1: value$comptime82[1]
     };
   }
 }
 
-function copyShape(value$comptime62) {
+function copyShape(value$comptime83) {
   let match;
-  match = typeof value$comptime62 !== "object" ? Primitive_option.some(undefined) : undefined;
+  match = typeof value$comptime83 !== "object" ? Primitive_option.some(undefined) : undefined;
   if (match !== undefined) {
     return "Point";
   }
-  let payload$comptime63;
-  payload$comptime63 = typeof value$comptime62 !== "object" || value$comptime62.TAG !== "Circle" ? undefined : value$comptime62._0;
-  if (payload$comptime63 !== undefined) {
+  let payload$comptime84;
+  payload$comptime84 = typeof value$comptime83 !== "object" || value$comptime83.TAG !== "Circle" ? undefined : value$comptime83._0;
+  if (payload$comptime84 !== undefined) {
     return {
       TAG: "Circle",
-      _0: payload$comptime63
+      _0: payload$comptime84
     };
   }
-  let payload$comptime64;
-  payload$comptime64 = typeof value$comptime62 !== "object" || value$comptime62.TAG === "Circle" ? undefined : [
-      value$comptime62._0,
-      value$comptime62._1
+  let payload$comptime85;
+  payload$comptime85 = typeof value$comptime83 !== "object" || value$comptime83.TAG === "Circle" ? undefined : [
+      value$comptime83._0,
+      value$comptime83._1
     ];
-  if (payload$comptime64 !== undefined) {
+  if (payload$comptime85 !== undefined) {
     return {
       TAG: "Rect",
-      _0: payload$comptime64[0],
-      _1: payload$comptime64[1]
+      _0: payload$comptime85[0],
+      _1: payload$comptime85[1]
     };
   } else {
     return Stdlib_JsError.throwWithMessage("variant value did not match any constructor");
   }
 }
 
-function encodeInts(value$comptime65) {
-  return Stdlib_List.toArray(value$comptime65).map(arg$comptime0 => (arg$comptime0));
+function encodeInts(value$comptime86) {
+  return Stdlib_List.toArray(value$comptime86).map(arg$comptime0 => (arg$comptime0));
 }
 
-function decodeInts(json$comptime66) {
-  if (Array.isArray(json$comptime66)) {
-    return Stdlib_Array.reduceRight(json$comptime66, /* [] */0, (arg$comptime0, arg$comptime1) => {
+function decodeInts(json$comptime87) {
+  if (Array.isArray(json$comptime87)) {
+    return Stdlib_Array.reduceRight(json$comptime87, /* [] */0, (arg$comptime0, arg$comptime1) => {
       let match;
       match = typeof arg$comptime1 === "number" ? arg$comptime1 | 0 : undefined;
       if (match !== undefined && arg$comptime0 !== undefined) {
@@ -428,36 +600,36 @@ function decodeInts(json$comptime66) {
   }
 }
 
-function copyInts(value$comptime71) {
-  return Stdlib_List.fromArray(Stdlib_List.toArray(value$comptime71).map(arg$comptime0 => arg$comptime0));
+function copyInts(value$comptime92) {
+  return Stdlib_List.fromArray(Stdlib_List.toArray(value$comptime92).map(arg$comptime0 => arg$comptime0));
 }
 
-function encodeResult(value$comptime72) {
-  let payload$comptime73;
-  payload$comptime73 = value$comptime72.TAG === "Ok" ? value$comptime72._0 : undefined;
-  if (payload$comptime73 !== undefined) {
+function encodeResult(value$comptime93) {
+  let payload$comptime94;
+  payload$comptime94 = value$comptime93.TAG === "Ok" ? value$comptime93._0 : undefined;
+  if (payload$comptime94 !== undefined) {
     return {
       tag: "Ok",
-      value: payload$comptime73
+      value: payload$comptime94
     };
   }
-  let payload$comptime74;
-  payload$comptime74 = value$comptime72.TAG === "Ok" ? undefined : value$comptime72._0;
-  if (payload$comptime74 !== undefined) {
+  let payload$comptime95;
+  payload$comptime95 = value$comptime93.TAG === "Ok" ? undefined : value$comptime93._0;
+  if (payload$comptime95 !== undefined) {
     return {
       tag: "Error",
-      value: payload$comptime74
+      value: payload$comptime95
     };
   } else {
     return Stdlib_JsError.throwWithMessage("variant value did not match any constructor");
   }
 }
 
-function decodeResult(json$comptime75) {
-  if (typeof json$comptime75 !== "object" || json$comptime75 === null || Array.isArray(json$comptime75)) {
+function decodeResult(json$comptime96) {
+  if (typeof json$comptime96 !== "object" || json$comptime96 === null || Array.isArray(json$comptime96)) {
     return;
   }
-  let match = json$comptime75["tag"];
+  let match = json$comptime96["tag"];
   if (match === undefined) {
     return;
   }
@@ -465,16 +637,16 @@ function decodeResult(json$comptime75) {
     return;
   }
   if ("Ok" === match) {
-    let valueJson$comptime79 = json$comptime75["value"];
-    if (valueJson$comptime79 === undefined) {
+    let valueJson$comptime100 = json$comptime96["value"];
+    if (valueJson$comptime100 === undefined) {
       return;
     }
-    let value$comptime81;
-    value$comptime81 = typeof valueJson$comptime79 === "number" ? valueJson$comptime79 | 0 : undefined;
-    if (value$comptime81 !== undefined) {
+    let value$comptime102;
+    value$comptime102 = typeof valueJson$comptime100 === "number" ? valueJson$comptime100 | 0 : undefined;
+    if (value$comptime102 !== undefined) {
       return {
         TAG: "Ok",
-        _0: value$comptime81
+        _0: value$comptime102
       };
     } else {
       return;
@@ -483,35 +655,35 @@ function decodeResult(json$comptime75) {
   if ("Error" !== match) {
     return;
   }
-  let valueJson$comptime82 = json$comptime75["value"];
-  if (valueJson$comptime82 === undefined) {
+  let valueJson$comptime103 = json$comptime96["value"];
+  if (valueJson$comptime103 === undefined) {
     return;
   }
-  let value$comptime84;
-  value$comptime84 = typeof valueJson$comptime82 === "string" ? valueJson$comptime82 : undefined;
-  if (value$comptime84 !== undefined) {
+  let value$comptime105;
+  value$comptime105 = typeof valueJson$comptime103 === "string" ? valueJson$comptime103 : undefined;
+  if (value$comptime105 !== undefined) {
     return {
       TAG: "Error",
-      _0: value$comptime84
+      _0: value$comptime105
     };
   }
 }
 
-function copyResult(value$comptime85) {
-  let payload$comptime86;
-  payload$comptime86 = value$comptime85.TAG === "Ok" ? value$comptime85._0 : undefined;
-  if (payload$comptime86 !== undefined) {
+function copyResult(value$comptime106) {
+  let payload$comptime107;
+  payload$comptime107 = value$comptime106.TAG === "Ok" ? value$comptime106._0 : undefined;
+  if (payload$comptime107 !== undefined) {
     return {
       TAG: "Ok",
-      _0: payload$comptime86
+      _0: payload$comptime107
     };
   }
-  let payload$comptime87;
-  payload$comptime87 = value$comptime85.TAG === "Ok" ? undefined : value$comptime85._0;
-  if (payload$comptime87 !== undefined) {
+  let payload$comptime108;
+  payload$comptime108 = value$comptime106.TAG === "Ok" ? undefined : value$comptime106._0;
+  if (payload$comptime108 !== undefined) {
     return {
       TAG: "Error",
-      _0: payload$comptime87
+      _0: payload$comptime108
     };
   } else {
     return Stdlib_JsError.throwWithMessage("variant value did not match any constructor");
@@ -536,6 +708,21 @@ let agePair = [
   "Ada",
   42
 ];
+
+let userNameField = {
+  TAG: "Name",
+  _0: "Ada"
+};
+
+let userAgeField = {
+  TAG: "Age",
+  _0: 42
+};
+
+let userActiveField = {
+  TAG: "Active",
+  _0: true
+};
 
 let sampleShape = {
   TAG: "Rect",
@@ -566,6 +753,8 @@ let encodedFox = encodeAnimal(fox);
 let encodedPair = encodePair(agePair);
 
 let encodedColor = encodeColor("Green");
+
+let encodedUserAgeField = encodeUserFieldValue(userAgeField);
 
 let encodedShape = encodeShape(sampleShape);
 
@@ -603,6 +792,20 @@ console.log(decodeColor(encodedColor));
 
 console.log(copyColor("Green"));
 
+console.log(allColors);
+
+console.log(userNameField);
+
+console.log(userAgeField);
+
+console.log(userActiveField);
+
+console.log(encodedUserAgeField);
+
+console.log(decodeUserFieldValue(encodedUserAgeField));
+
+console.log(copyUserFieldValue(userActiveField));
+
 console.log(encodedShape);
 
 console.log(decodeShape(encodedShape));
@@ -638,6 +841,10 @@ export {
   encodeColor,
   decodeColor,
   copyColor,
+  allColors,
+  encodeUserFieldValue,
+  decodeUserFieldValue,
+  copyUserFieldValue,
   encodeShape,
   decodeShape,
   copyShape,
@@ -653,6 +860,9 @@ export {
   fox,
   agePair,
   favoriteColor,
+  userNameField,
+  userAgeField,
+  userActiveField,
   sampleShape,
   numbers,
   score,
@@ -660,6 +870,7 @@ export {
   encodedFox,
   encodedPair,
   encodedColor,
+  encodedUserAgeField,
   encodedShape,
   encodedNumbers,
   encodedScore,
