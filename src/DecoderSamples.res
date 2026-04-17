@@ -212,36 +212,32 @@ let sampleShape = Rect(3., 4.)
 let numbers = list{1, 2, 3}
 let score = Ok(7)
 
-let jsonAda =
-  JSON.Object(
-    dict{
-      "name": JSON.String("Ada"),
-      "age": JSON.Number(42.),
-      "active": JSON.Boolean(true),
-    },
-  )
+let jsonAda = JSON.Object(
+  dict{
+    "name": JSON.String("Ada"),
+    "age": JSON.Number(42.),
+    "active": JSON.Boolean(true),
+  },
+)
 
 let jsonPair = JSON.Array([JSON.String("Ada"), JSON.Number(42.)])
 let jsonColor = JSON.String("Green")
 
-let jsonShape =
-  JSON.Object(
-    dict{
-      "tag": JSON.String("Rect"),
-      "value": JSON.Array([JSON.Number(3.), JSON.Number(4.)]),
-    },
-  )
+let jsonShape = JSON.Object(
+  dict{
+    "tag": JSON.String("Rect"),
+    "value": JSON.Array([JSON.Number(3.), JSON.Number(4.)]),
+  },
+)
 
-let jsonNumbers =
-  JSON.Array([JSON.Number(1.), JSON.Number(2.), JSON.Number(3.)])
+let jsonNumbers = JSON.Array([JSON.Number(1.), JSON.Number(2.), JSON.Number(3.)])
 
-let jsonScore =
-  JSON.Object(
-    dict{
-      "tag": JSON.String("Ok"),
-      "value": JSON.Number(7.),
-    },
-  )
+let jsonScore = JSON.Object(
+  dict{
+    "tag": JSON.String("Ok"),
+    "value": JSON.Number(7.),
+  },
+)
 
 let decodedAda = decodeUser(jsonAda)
 let decodedPair = decodePair(jsonPair)

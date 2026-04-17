@@ -42,8 +42,7 @@ let rec encodeByType:
       | None => JSON.Null
       }
     | Array(inner) => JSON.Array(value->Array.map(item => encodeByType(inner, item)))
-    | List(inner) =>
-      JSON.Array(value->List.toArray->Array.map(item => encodeByType(inner, item)))
+    | List(inner) => JSON.Array(value->List.toArray->Array.map(item => encodeByType(inner, item)))
     | Record({fields}) =>
       JSON.Object(
         fields->Array.reduce(Dict.make(), (builder, field) => {

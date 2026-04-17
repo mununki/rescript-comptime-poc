@@ -7,16 +7,12 @@ type user = {
 }
 
 type userFieldValue = %comptime({
-  let makeVariantFromFields = fields =>
-    Variant({
-      constructors:
-        fields->Array.map(field =>
-          Constructor({
-            name: field.name->String.capitalize,
-            payload: Single(field.typ),
-          })
-        ),
-    })
+  let makeVariantFromFields = fields => Variant({
+    constructors: fields->Array.map(field => Constructor({
+      name: field.name->String.capitalize,
+      payload: Single(field.typ),
+    })),
+  })
 
   let makeVariantFromRecord = _witness =>
     switch reflect() {
@@ -24,7 +20,13 @@ type userFieldValue = %comptime({
     | _ => failwith("userFieldValue only supports records")
     }
 
-  makeVariantFromRecord(module({type t = user}))
+  makeVariantFromRecord(
+    module(
+      {
+        type t = user
+      }
+    ),
+  )
 })
 
 let userNameField = Name("Ada")

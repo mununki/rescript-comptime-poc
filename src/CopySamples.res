@@ -33,8 +33,7 @@ let rec copyByType:
       | None => None
       }
     | Array(inner) => value->Array.map(item => copyByType(inner, item))
-    | List(inner) =>
-      value->List.toArray->Array.map(item => copyByType(inner, item))->List.fromArray
+    | List(inner) => value->List.toArray->Array.map(item => copyByType(inner, item))->List.fromArray
     | Record({fields}) =>
       fields->Array.reduce(Dict.make(), (builder, field) => {
         let nextBuilder = Dict.copy(builder)
@@ -65,8 +64,7 @@ let rec copyByType:
             }
           | Tuple({items}) =>
             switch constructor.unpack(value) {
-            | Some(payload) =>
-              constructor.make(copyByType(Tuple({items: items}), payload))
+            | Some(payload) => constructor.make(copyByType(Tuple({items: items}), payload))
             | None => next(value)
             }
           }
