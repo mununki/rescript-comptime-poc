@@ -20,6 +20,8 @@ The sample includes generic:
 - `makeCopy`
 - `makeAllCases`
 - `makeVariantFromRecord`
+- `makeOptionalRecord`
+- `makeRecordFromVariant`
 
 and applies them to:
 
@@ -37,6 +39,8 @@ The source tree is split by use case:
 - `src/CopySamples.res`: `makeCopy`
 - `src/AllCasesSamples.res`: `makeAllCases`
 - `src/VariantFromRecordSamples.res`: `makeVariantFromRecord`
+- `src/OptionalRecordSamples.res`: `makeOptionalRecord`
+- `src/RecordFromVariantSamples.res`: `makeRecordFromVariant`
 - `src/ComptimeValues.res`: direct compile-time evaluation examples
 
 Each sample module logs its own values at top level, so you can inspect a
@@ -48,6 +52,8 @@ node src/DecoderSamples.mjs
 node src/CopySamples.mjs
 node src/AllCasesSamples.mjs
 node src/VariantFromRecordSamples.mjs
+node src/OptionalRecordSamples.mjs
+node src/RecordFromVariantSamples.mjs
 node src/ComptimeValues.mjs
 ```
 
@@ -78,6 +84,31 @@ pnpm test
 The project uses local `link:` dependencies, so `node_modules/rescript` points
 at the sibling compiler checkout.
 
+When a comptime helper needs to return an actual record value, the intended
+surface stays close to ordinary ReScript record syntax:
+
+```rescript
+let finish = (_obj, builder) => Some(builder)
+
+let addField = (next, field) =>
+  (obj, r) =>
+    switch Dict.get(obj, field.name) {
+    | Some(valueJson) =>
+      switch decodeByType(field.typ, valueJson) {
+      | Some(value) => next(obj, {...r, field: value})
+      | None => None
+      }
+    | None => None
+    }
+
+let seed = {}
+Array.reduceRight(fields, finish, addField)(obj, seed)
+```
+
+This keeps the decoder-style "build a record from reflected fields" path close
+to ordinary record update syntax. The compiler still lowers it to its existing
+internal builder representation.
+
 ## Type-Level Example
 
 The POC includes a generated type alias that turns a record into a variant
@@ -104,6 +135,70 @@ type userFieldValue = %comptime(
     makeVariantFromRecord(module({type t = user}))
   }
 )
+```
+
+Additional generated-type samples:
+
+```rescript
+type r0 = {name: string, age: int}
+type optionalValueR0 = %comptime({
+  let makeOptionRecord = _witness =>
+    switch reflect() {
+    | Record({fields}) =>
+      Record({
+        fields:
+          fields->Array.map(field => {
+            name: field.name,
+            typ: Option(field.typ),
+          }),
+      })
+    | _ => failwith("makeOptionRecord only supports records")
+    }
+  makeOptionRecord(module({type t = r0}))
+})
+
+type optionalFieldR0 = %comptime({
+  let makeOptionalFieldRecord = _witness =>
+    switch reflect() {
+    | Record({fields}) =>
+      Record({
+        fields:
+          fields->Array.map(field => {
+            name: field.name,
+            typ: Optional(field.typ),
+          }),
+      })
+    | _ => failwith("makeOptionalFieldRecord only supports records")
+    }
+  makeOptionalFieldRecord(module({type t = r0}))
+})
+
+type v0 =
+  | Name(string)
+  | Age(int)
+
+type r0 = %comptime({
+  let makeRecordFromVariant = _witness =>
+    switch reflect() {
+    | Variant({constructors}) =>
+      Record({
+        fields:
+          constructors->Array.map(constructor => {
+            name: switch constructor.name {
+            | "Name" => "name"
+            | "Age" => "age"
+            | _ => failwith("unsupported constructor")
+            },
+            typ: switch constructor.payload {
+            | Single(desc) => desc
+            | _ => failwith("single-payload constructors only")
+            },
+          }),
+      })
+    | _ => failwith("makeRecordFromVariant only supports variants")
+    }
+  makeRecordFromVariant(module({type t = v0}))
+})
 ```
 
 ## Proving Compile-Time Evaluation

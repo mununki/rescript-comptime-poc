@@ -62,6 +62,13 @@ import {
   userAgeField,
   userNameField,
 } from "./src/VariantFromRecordSamples.mjs";
+import {
+  emptyOptionalFieldR0,
+  emptyOptionalValueR0,
+  fullOptionalFieldR0,
+  fullOptionalValueR0,
+} from "./src/OptionalRecordSamples.mjs";
+import {personR0} from "./src/RecordFromVariantSamples.mjs";
 
 assert.equal(three, 3);
 assert.equal(greeting, "comptime");
@@ -116,5 +123,22 @@ assert.deepEqual(userActiveField, {
   _0: true,
 });
 assert.equal(fieldLabel(userAgeField), "Age");
+assert.deepEqual(emptyOptionalValueR0, {
+  name: undefined,
+  age: undefined,
+});
+assert.deepEqual(fullOptionalValueR0, {
+  name: "Ada",
+  age: 42,
+});
+assert.deepEqual(emptyOptionalFieldR0, {});
+assert.deepEqual(fullOptionalFieldR0, {
+  name: "Ada",
+  age: 42,
+});
+assert.deepEqual(personR0, {
+  name: "Ada",
+  age: 42,
+});
 
 console.log("comptime poc passed");
