@@ -30,6 +30,27 @@ and applies them to:
 - `result`
 - generated type aliases derived from existing reflected types
 
+The source tree is split by use case:
+
+- `src/EncoderSamples.res`: `makeJsonEncoder`
+- `src/DecoderSamples.res`: `makeJsonDecoder`
+- `src/CopySamples.res`: `makeCopy`
+- `src/AllCasesSamples.res`: `makeAllCases`
+- `src/VariantFromRecordSamples.res`: `makeVariantFromRecord`
+- `src/ComptimeValues.res`: direct compile-time evaluation examples
+
+Each sample module logs its own values at top level, so you can inspect a
+single example directly with Node:
+
+```sh
+node src/EncoderSamples.mjs
+node src/DecoderSamples.mjs
+node src/CopySamples.mjs
+node src/AllCasesSamples.mjs
+node src/VariantFromRecordSamples.mjs
+node src/ComptimeValues.mjs
+```
+
 ## Assumptions
 
 - The compiler repo lives at `/Users/mununki/github/mununki/rescript`
@@ -91,7 +112,7 @@ type userFieldValue = %comptime(
 not proof by itself because ordinary compiler optimizations can also
 constant-fold simple expressions.
 
-The direct proof is the commented example in [`src/Main.res`](./src/Main.res):
+The direct proof is the commented example in [`src/ComptimeValues.res`](./src/ComptimeValues.res):
 
 ```rescript
 let broken: int = %comptime(failwith("ran during compilation"))

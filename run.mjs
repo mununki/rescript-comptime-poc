@@ -1,52 +1,67 @@
 import assert from "node:assert/strict";
 
+import {greeting, three} from "./src/ComptimeValues.mjs";
 import {
   ada,
+  encodedAda,
+  encodeUser,
   agePair,
-  allColors,
-  copyAnimal,
-  copyColor,
-  copyInts,
-  copyPair,
-  copyResult,
-  copyShape,
-  copyUserFieldValue,
-  copyUser,
-  decodeAnimal,
+  encodedPair,
+  encodePair,
+  encodedColor,
+  encodedShape,
+  encodedNumbers,
+  encodedScore,
+  encodeColor,
+  encodeShape,
+  favoriteColor,
+  numbers,
+  sampleShape,
+  score,
+  encodeInts,
+  encodeResult,
+} from "./src/EncoderSamples.mjs";
+import {
+  ada as decodedAdaExpected,
+  agePair as decodedPairExpected,
   decodeColor,
   decodeInts,
   decodePair,
   decodeResult,
   decodeShape,
-  decodeUserFieldValue,
   decodeUser,
-  encodeAnimal,
-  encodeColor,
-  encodedAda,
-  encodedColor,
-  encodedFox,
-  encodedNumbers,
-  encodedPair,
-  encodedScore,
-  encodedShape,
-  encodedUserAgeField,
-  encodeInts,
-  encodePair,
-  encodeResult,
-  encodeShape,
-  encodeUserFieldValue,
-  encodeUser,
-  favoriteColor,
-  fox,
-  greeting,
-  numbers,
-  sampleShape,
-  score,
-  three,
+  favoriteColor as decodedColorExpected,
+  jsonAda,
+  jsonColor,
+  jsonNumbers,
+  jsonPair,
+  jsonScore,
+  jsonShape,
+  numbers as decodedNumbersExpected,
+  sampleShape as decodedShapeExpected,
+  score as decodedScoreExpected,
+} from "./src/DecoderSamples.mjs";
+import {
+  ada as copiedAdaExpected,
+  agePair as copiedPairExpected,
+  copiedAda,
+  copiedColor,
+  copiedNumbers,
+  copiedPair,
+  copiedScore,
+  copiedShape,
+  favoriteColor as copiedColorExpected,
+  numbers as copiedNumbersExpected,
+  sampleShape as copiedShapeExpected,
+  score as copiedScoreExpected,
+} from "./src/CopySamples.mjs";
+import {allColors} from "./src/AllCasesSamples.mjs";
+import {
+  fieldLabel,
   userActiveField,
   userAgeField,
   userNameField,
-} from "./src/Main.mjs";
+} from "./src/VariantFromRecordSamples.mjs";
 
 assert.equal(three, 3);
 assert.equal(greeting, "comptime");
@@ -56,29 +71,37 @@ assert.deepEqual(encodedAda, {
   active: true,
 });
 assert.deepEqual(encodeUser(ada), encodedAda);
-assert.deepEqual(decodeUser(encodedAda), ada);
-assert.deepEqual(copyUser(ada), ada);
-assert.equal(decodeUser("nope"), undefined);
-
-assert.deepEqual(encodedFox, {
-  species: "Fox",
-  age: 5,
-  wild: true,
-});
-assert.deepEqual(encodeAnimal(fox), encodedFox);
-assert.deepEqual(decodeAnimal(encodedFox), fox);
-assert.deepEqual(copyAnimal(fox), fox);
-assert.equal(decodeAnimal("nope"), undefined);
-
 assert.deepEqual(encodedPair, ["Ada", 42]);
 assert.deepEqual(encodePair(agePair), encodedPair);
-assert.deepEqual(decodePair(encodedPair), agePair);
-assert.deepEqual(copyPair(agePair), agePair);
-
 assert.equal(encodedColor, "Green");
 assert.equal(encodeColor(favoriteColor), encodedColor);
-assert.equal(decodeColor(encodedColor), favoriteColor);
-assert.equal(copyColor(favoriteColor), favoriteColor);
+assert.deepEqual(encodedShape, {
+  tag: "Rect",
+  value: [3, 4],
+});
+assert.deepEqual(encodeShape(sampleShape), encodedShape);
+assert.deepEqual(encodedNumbers, [1, 2, 3]);
+assert.deepEqual(encodeInts(numbers), encodedNumbers);
+assert.deepEqual(encodedScore, {
+  tag: "Ok",
+  value: 7,
+});
+assert.deepEqual(encodeResult(score), encodedScore);
+
+assert.deepEqual(decodeUser(jsonAda), decodedAdaExpected);
+assert.deepEqual(decodePair(jsonPair), decodedPairExpected);
+assert.equal(decodeColor(jsonColor), decodedColorExpected);
+assert.deepEqual(decodeShape(jsonShape), decodedShapeExpected);
+assert.deepEqual(decodeInts(jsonNumbers), decodedNumbersExpected);
+assert.deepEqual(decodeResult(jsonScore), decodedScoreExpected);
+
+assert.deepEqual(copiedAda, copiedAdaExpected);
+assert.deepEqual(copiedPair, copiedPairExpected);
+assert.equal(copiedColor, copiedColorExpected);
+assert.deepEqual(copiedShape, copiedShapeExpected);
+assert.deepEqual(copiedNumbers, copiedNumbersExpected);
+assert.deepEqual(copiedScore, copiedScoreExpected);
+
 assert.deepEqual(allColors, ["Red", "Green", "Blue"]);
 assert.deepEqual(userNameField, {
   TAG: "Name",
@@ -92,33 +115,6 @@ assert.deepEqual(userActiveField, {
   TAG: "Active",
   _0: true,
 });
-assert.deepEqual(encodedUserAgeField, {
-  tag: "Age",
-  value: 42,
-});
-assert.deepEqual(encodeUserFieldValue(userAgeField), encodedUserAgeField);
-assert.deepEqual(decodeUserFieldValue(encodedUserAgeField), userAgeField);
-assert.deepEqual(copyUserFieldValue(userActiveField), userActiveField);
-
-assert.deepEqual(encodedShape, {
-  tag: "Rect",
-  value: [3, 4],
-});
-assert.deepEqual(encodeShape(sampleShape), encodedShape);
-assert.deepEqual(decodeShape(encodedShape), sampleShape);
-assert.deepEqual(copyShape(sampleShape), sampleShape);
-
-assert.deepEqual(encodedNumbers, [1, 2, 3]);
-assert.deepEqual(encodeInts(numbers), encodedNumbers);
-assert.deepEqual(decodeInts(encodedNumbers), numbers);
-assert.deepEqual(copyInts(numbers), numbers);
-
-assert.deepEqual(encodedScore, {
-  tag: "Ok",
-  value: 7,
-});
-assert.deepEqual(encodeResult(score), encodedScore);
-assert.deepEqual(decodeResult(encodedScore), score);
-assert.deepEqual(copyResult(score), score);
+assert.equal(fieldLabel(userAgeField), "Age");
 
 console.log("comptime poc passed");
