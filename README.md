@@ -3,6 +3,9 @@
 Small standalone POC project for exercising the current `comptime`
 implementation in the sibling `../rescript` checkout.
 
+This POC is intended to run against
+`github.com/mununki/rescript` on the `poc-comptime` branch.
+
 The public surface used here is intentionally small:
 
 - `%comptime(...)` on top-level `let` bindings
@@ -60,6 +63,7 @@ node src/ComptimeValues.mjs
 ## Assumptions
 
 - The compiler repo lives at `/Users/mununki/github/mununki/rescript`
+- That checkout is `github.com/mununki/rescript` on the `poc-comptime` branch
 - That checkout has already been rebuilt after the `comptime` changes
 
 ## Local Setup
