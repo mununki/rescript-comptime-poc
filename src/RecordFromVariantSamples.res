@@ -19,6 +19,7 @@ type r0 = %comptime({
         fields: constructors->Array.map(constructor => {
           name: fieldNameFromConstructor(constructor.name),
           typ: switch constructor.payload {
+          | Single(Int) => Optional(Int)
           | Single(desc) => desc
           | _ => failwith("makeRecordFromVariant only supports single-payload constructors")
           },
@@ -36,6 +37,7 @@ type r0 = %comptime({
   )
 })
 
-let personR0: r0 = {name: "Ada", age: 42}
+let personR0: r0 = {name: "Ada"}
+let personR1: r0 = {name: "Idris", age: 19}
 
 Console.log(personR0)

@@ -2,13 +2,18 @@
 
 
 let personR0 = {
-  name: "Ada",
-  age: 42
+  name: "Ada"
 };
 
 console.log(personR0);
 
+let personR1 = {
+  name: "Idris",
+  age: 19
+};
+
 export {
   personR0,
+  personR1,
 }
 /*  Not a pure module */
