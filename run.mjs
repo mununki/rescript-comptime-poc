@@ -69,6 +69,14 @@ import {
   fullOptionalValueR0,
 } from "./src/OptionalRecordSamples.mjs";
 import {personR0} from "./src/RecordFromVariantSamples.mjs";
+import {
+  decodeTree,
+  decodedTree,
+  encodedTree,
+  encodeTree,
+  jsonTree,
+  sampleTree,
+} from "./src/RecursiveTypeSamples.mjs";
 
 assert.equal(three, 3);
 assert.equal(greeting, "comptime");
@@ -140,5 +148,26 @@ assert.deepEqual(personR0, {
   name: "Ada",
   age: 42,
 });
+assert.deepEqual(encodedTree, {
+  value: "root",
+  children: [
+    {
+      value: "left",
+      children: [],
+    },
+    {
+      value: "right",
+      children: [
+        {
+          value: "leaf",
+          children: [],
+        },
+      ],
+    },
+  ],
+});
+assert.deepEqual(encodeTree(sampleTree), encodedTree);
+assert.deepEqual(decodedTree, sampleTree);
+assert.deepEqual(decodeTree(jsonTree), decodedTree);
 
 console.log("comptime poc passed");
